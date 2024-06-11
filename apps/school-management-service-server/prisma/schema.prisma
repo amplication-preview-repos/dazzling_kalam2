@@ -1,0 +1,121 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  createdAt DateTime @default(now())
+  email     String?
+  id        String   @id @default(cuid())
+  password  String?
+  updatedAt DateTime @updatedAt
+  username  String?
+}
+
+model Accountant {
+  createdAt DateTime @default(now())
+  email     String?
+  id        String   @id @default(cuid())
+  password  String?
+  updatedAt DateTime @updatedAt
+  username  String?
+}
+
+model SchoolFees {
+  amount    Float?
+  createdAt DateTime              @default(now())
+  dueDate   DateTime?
+  id        String                @id @default(cuid())
+  status    EnumSchoolFeesStatus?
+  student   Student?              @relation(fields: [studentId], references: [id])
+  studentId String?
+  updatedAt DateTime              @updatedAt
+}
+
+model Reports {
+  content   String?
+  createdAt DateTime  @default(now())
+  date      DateTime?
+  id        String    @id @default(cuid())
+  student   Student?  @relation(fields: [studentId], references: [id])
+  studentId String?
+  title     String?
+  updatedAt DateTime  @updatedAt
+}
+
+model Teacher {
+  createdAt DateTime              @default(now())
+  email     String?
+  firstName String?
+  id        String                @id @default(cuid())
+  lastName  String?
+  subjects  EnumTeacherSubjects[]
+  updatedAt DateTime              @updatedAt
+}
+
+model Student {
+  address         String?
+  attendances     Attendance[]
+  classField      String?
+  createdAt       DateTime     @default(now())
+  dateOfBirth     DateTime?
+  email           String?
+  exams           Exam[]
+  firstName       String?
+  id              String       @id @default(cuid())
+  lastName        String?
+  parent          Parent?      @relation(fields: [parentId], references: [id])
+  parentId        String?
+  reportsItems    Reports[]
+  schoolFeesItems SchoolFees[]
+  updatedAt       DateTime     @updatedAt
+}
+
+model Exam {
+  createdAt DateTime  @default(now())
+  date      DateTime?
+  id        String    @id @default(cuid())
+  result    Float?
+  student   Student?  @relation(fields: [studentId], references: [id])
+  studentId String?
+  subject   String?
+  updatedAt DateTime  @updatedAt
+}
+
+model Parent {
+  address     String?
+  createdAt   DateTime  @default(now())
+  email       String?
+  firstName   String?
+  id          String    @id @default(cuid())
+  lastName    String?
+  phoneNumber String?
+  students    Student[]
+  updatedAt   DateTime  @updatedAt
+}
+
+model Attendance {
+  createdAt DateTime              @default(now())
+  date      DateTime?
+  id        String                @id @default(cuid())
+  status    EnumAttendanceStatus?
+  student   Student?              @relation(fields: [studentId], references: [id])
+  studentId String?
+  updatedAt DateTime              @updatedAt
+}
+
+enum EnumSchoolFeesStatus {
+  Option1
+}
+
+enum EnumTeacherSubjects {
+  Option1
+}
+
+enum EnumAttendanceStatus {
+  Option1
+}
