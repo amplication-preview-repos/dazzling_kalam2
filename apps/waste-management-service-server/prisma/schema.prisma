@@ -1,0 +1,56 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model WasteCollectionZone {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  name        String?
+  updatedAt   DateTime @updatedAt
+}
+
+model WasteCollectionRequest {
+  createdAt   DateTime                          @default(now())
+  id          String                            @id @default(cuid())
+  location    String?
+  requestedAt DateTime?
+  status      EnumWasteCollectionRequestStatus?
+  updatedAt   DateTime                          @updatedAt
+  user        User?                             @relation(fields: [userId], references: [id])
+  userId      String?
+}
+
+model Feedback {
+  createdAt   DateTime  @default(now())
+  id          String    @id @default(cuid())
+  message     String?
+  rating      Int?
+  submittedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      String?
+}
+
+model User {
+  createdAt               DateTime                 @default(now())
+  email                   String?                  @unique
+  feedbacks               Feedback[]
+  firstName               String?
+  id                      String                   @id @default(cuid())
+  lastName                String?
+  password                String
+  roles                   Json
+  updatedAt               DateTime                 @updatedAt
+  username                String                   @unique
+  wasteCollectionRequests WasteCollectionRequest[]
+}
+
+enum EnumWasteCollectionRequestStatus {
+  Option1
+}
